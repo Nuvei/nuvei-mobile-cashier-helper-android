@@ -1,0 +1,3 @@
+include ':NuveiCashierCardScannerSDK'
+include ':app'
+rootProject.name = "NuveiCashierCardScannerSDK-Source-Android"
