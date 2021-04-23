@@ -1,0 +1,84 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 29
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                // Creates a Maven publication called "release".
+                release(MavenPublication) {
+                    // Applies the component for the release build variant.
+                    from components.release
+
+                    // You can then customize attributes of the publication as shown below.
+                    groupId = 'com.nuvei'
+                    artifactId = 'CashierScanner'
+                    version = '1.0.2'
+
+                    pom {
+                        name = 'CashierScanner'
+                        description = 'Nuvei Cashier Scanner library'
+                        url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
+                        licenses {
+                            license {
+                                name = 'Custom License'
+                                url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner/blob/master/LICENSE.md'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'nuvei'
+                                name = 'Nuvei'
+                                email = 'yavor.stefanov@nuvei.com'
+                            }
+                        }
+                        scm {
+                            connection = 'scm:git:git://github.com/SafeChargeInternational/NuveiCashierScanner.git'
+                            url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
+                        }
+                    }
+                }
+                // Creates a Maven publication called “debug”.
+                debug(MavenPublication) {
+                    // Applies the component for the debug build variant.
+                    from components.debug
+
+                    groupId = 'com.nuvei'
+                    artifactId = 'CashierScanner-debug'
+                    version = '1.0.2'
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+}
