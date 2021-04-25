@@ -31,7 +31,8 @@ public object NuveiCashierScanner {
         url?.takeIf { it.toString().contains("nuveicashier://scanQR", ignoreCase = true) }?.let {
             val integrator = IntentIntegrator(activity)
             integrator.setOrientationLocked(false)
-            integrator.initiateScan();
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            integrator.initiateScan()
 
             true
         } ?: false

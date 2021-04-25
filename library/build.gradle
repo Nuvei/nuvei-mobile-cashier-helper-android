@@ -15,7 +15,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName library_version
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -40,7 +40,7 @@ android {
                     // You can then customize attributes of the publication as shown below.
                     groupId = 'com.nuvei'
                     artifactId = 'CashierScanner'
-                    version = '1.0.2'
+                    version = library_version
 
                     pom {
                         name = 'CashierScanner'
@@ -72,7 +72,7 @@ android {
 
                     groupId = 'com.nuvei'
                     artifactId = 'CashierScanner-debug'
-                    version = '1.0.2'
+                    version = library_version
                 }
             }
         }

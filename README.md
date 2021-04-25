@@ -23,23 +23,17 @@ allprojects {
 
 Add the next line in your app build.gradle file:
 ```gradle
-implementation "com.github.SafeChargeInternational.NuveiCashierScanner:CashierScanner:1.0.1"
+implementation "com.github.SafeChargeInternational.NuveiCashierScanner:CashierScanner:1.0.6"
 ```
 
-PERMISSIONS
+HARDWARE ACCELERATION
 ------------
-Add the next lines in your main project build.gradle file:
+Hardware acceleration is required since TextureView is used.
+
+Make sure it is enabled in your manifest file:
+
 ```xml
-<!-- Permission to vibrate — recommended, allows vibration feedback on scan ->
-<uses-permission android:name=”android.permission.VIBRATE” />
-
-<!-- Permission to use camera — required ->
-<uses-permission android:name=”android.permission.CAMERA” />
-
-<!-- Camera features — recommended ->
-<uses-feature android:name=”android.hardware.camera” android:required=”false” />
-<uses-feature android:name=”android.hardware.camera.autofocus” android:required=”false” />
-<uses-feature android:name=”android.hardware.camera.flash” android:required=”false” />
+    <application android:hardwareAccelerated="true" ... >
 ```
 
 USAGE
