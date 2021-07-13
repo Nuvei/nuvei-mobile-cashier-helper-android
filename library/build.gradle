@@ -65,15 +65,6 @@ android {
                         }
                     }
                 }
-                // Creates a Maven publication called “debug”.
-                debug(MavenPublication) {
-                    // Applies the component for the debug build variant.
-                    from components.debug
-
-                    groupId = 'com.nuvei'
-                    artifactId = 'CashierScanner-debug'
-                    version = library_version
-                }
             }
         }
     }
@@ -81,4 +72,5 @@ android {
 
 dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+    implementation 'cards.pay:paycardsrecognizer:1.1.0'
 }
