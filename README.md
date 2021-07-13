@@ -23,7 +23,7 @@ allprojects {
 
 Add the next line in your app build.gradle file:
 ```gradle
-implementation "com.github.SafeChargeInternational.NuveiCashierScanner:CashierScanner:1.0.6"
+implementation "com.github.SafeChargeInternational.NuveiCashierScanner:CashierScanner:1.1.1"
 ```
 
 HARDWARE ACCELERATION
