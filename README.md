@@ -1,8 +1,22 @@
-Nuvei Cashier Scanner SDK for Android
+Nuvei Cashier Helper SDK for Android
 ==========================================
 
 SETUP
 ------------
+Manual integration: 
+Download the latest library (nuvei-cashier-helper.aar). 
+Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
+Put all the above libraries files under libs folder in your project.
+Add the next line in your app build.gradle file:
+```gradle
+implementation(name:'nuvei-cashier-helper', ext:'aar')
+implementation(name:'nuvei-paycards', ext:'aar')
+implementation(name:'nuvei-zxing-android-embedded', ext:'aar')
+api 'com.google.zxing:core:3.4.0'
+```
+
+
+Maven integration:
 Add the next lines in your main project build.gradle file:
 ```gradle
 buildscript {
@@ -34,7 +48,7 @@ Hardware acceleration is required since TextureView is used.
 Make sure it is enabled in your manifest file:
 
 ```xml
-    <application android:hardwareAccelerated="true" ... >
+<application android:hardwareAccelerated="true" ... >
 ```
 
 USAGE
@@ -45,7 +59,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_web_view)
     
-    NuveiCashierScanner.connect(webview, this) // “this” is the current activity
+    NuveiCashierHelper.connect(webview, this) // “this” is the current activity
 
     // Register as WebView's webViewClient to tracj the URL changes and inform the CashierScanner SDK
     webview.webViewClient = object : WebViewClient() {
@@ -53,13 +67,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            return NuveiCashierScanner.handleURL(
+            return NuveiCashierHelper.handleURL(
                 request?.url,
                 this@WebViewActivity
             )
         }
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            return NuveiCashierScanner.handleURL(
+            return NuveiCashierHelper.handleURL(
                 Uri.parse(url),
                 this@WebViewActivity
             )
@@ -69,11 +83,19 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
+For a proper tearing down of the activity add the next line in your `onDestroy` method:
+```kotlin
+override fun onDestroy() {
+    NuveiCashierHelper.disconnect()
+    super.onDestroy()
+}
+```
+
 Implement the `onActivityResult` method in the activity that contains the web view as follows:
 ```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    // Inform CashierScanner SDK of an activity result (for handling QR scanner result)
-    if (!NuveiCashierScanner.handleActivityResult(requestCode, resultCode, data)) {
+    // Inform NuveiCashierHelper of an activity result (for handling QR/card scanner result or GooglePay result)
+    if (!NuveiCashierHelper.handleActivityResult(requestCode, resultCode, data)) {
         super.onActivityResult(requestCode, resultCode, data)
     }
 }
@@ -85,6 +107,11 @@ HINTS & TIPS
 * Note: the correct proguard file is automatically imported into your gradle project from the aar package. Anyone not using gradle will need to extract the proguard file and add it to their proguard config.
 * Processing images can be memory intensive.
 * [Memory Analysis for Android Applications](https://android-developers.blogspot.com/2011/03/memory-analysis-for-android.html) provides some useful information about how to track and reduce your app's memory useage.
+
+THIRD PARTY LIBS
+------------
+* [Pay.Cards](https://github.com/SafeChargeInternational/PayCards_Android)
+* [ZXing](https://github.com/SafeChargeInternational/zxing-android-embedded)
 
 LICENSE
 ------------

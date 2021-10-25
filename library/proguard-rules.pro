@@ -20,4 +20,11 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.nuvei.cashierscanner.NuveiCashierScanner{ public *;}
+-keep class com.nuvei.cashier.NuveiCashierHelper{ public *;}
+
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}
