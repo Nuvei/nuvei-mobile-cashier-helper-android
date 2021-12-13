@@ -6,6 +6,7 @@ SETUP
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
 Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
+All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/2.1.0)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
@@ -16,30 +17,8 @@ api 'com.google.zxing:core:3.4.0'
 ```
 
 
-Maven integration:
-Add the next lines in your main project build.gradle file:
-```gradle
-buildscript {
-    repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
-}
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-        maven { url 'http://pay.cards/maven' }
-    }
-}
-```
+Maven integration temporarilly unavailable
 
-Add the next line in your app build.gradle file:
-```gradle
-implementation "com.github.SafeChargeInternational.NuveiCashierScanner:CashierScanner:1.1.1"
-```
 
 HARDWARE ACCELERATION
 ------------
