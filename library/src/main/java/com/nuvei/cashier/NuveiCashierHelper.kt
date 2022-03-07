@@ -1,13 +1,18 @@
 package com.nuvei.cashier
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import cards.pay.paycardsrecognizer.sdk.Card
 import cards.pay.paycardsrecognizer.sdk.ScanCardIntent
 import com.google.android.gms.common.api.ApiException
@@ -15,7 +20,6 @@ import com.google.android.gms.common.api.Status
 import com.google.android.gms.wallet.*
 import com.google.zxing.integration.android.IntentIntegrator
 import org.json.JSONObject
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 
@@ -58,10 +62,11 @@ public object NuveiCashierHelper {
 
             true
         } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }?.let {
-            source = "scanCard"
-            val intent = ScanCardIntent.Builder(activity).build()
-            activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
-
+            checkPermissions(activity) {
+                source = "scanCard"
+                val intent = ScanCardIntent.Builder(activity).build()
+                activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
+            }
             true
         } ?: url?.takeIf { it.toString().contains("nuveicashier://GPay", ignoreCase = true) }?.let {
             source = "GPay"
@@ -307,4 +312,36 @@ public object NuveiCashierHelper {
     }
 
     private class NuveiException(val reason: String = ""): Exception()
+
+    private fun checkPermissions(context: Activity, completion: () -> Unit) {
+        if (shouldShowRequestPermissionRationale(context, Manifest.permission.CAMERA)) {
+            showAlert(context)
+        } else {
+            completion()
+        }
+    }
+
+    private fun openSettings(context: Context) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val uri = Uri.fromParts("package", context.getPackageName(), null)
+        intent.data = uri
+        context.startActivity(intent)
+    }
+
+    private fun showAlert(context: Context) {
+        val builder = AlertDialog.Builder(context)
+
+        builder.setTitle(R.string.permission_alert_title)
+        builder.setMessage(R.string.permission_alert_rationale)
+
+        builder.setPositiveButton(R.string.permission_alert_button_settings) { dialog, which ->
+            openSettings(context)
+        }
+
+        builder.setNeutralButton(R.string.permission_alert_button_ok) { dialog, which ->
+        }
+
+        builder.show()
+    }
 }

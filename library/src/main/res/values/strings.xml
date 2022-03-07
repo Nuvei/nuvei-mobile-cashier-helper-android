@@ -1,0 +1,7 @@
+<resources>
+    <string name="permission_alert_rationale">Camera access is required for card number and expiry date scanning.</string>
+    <string name="permission_alert_title">Camera Permission</string>
+    <string name="permission_alert_text">Camera access is required for card number and expiry date scanning.</string>
+    <string name="permission_alert_button_settings">Settings</string>
+    <string name="permission_alert_button_ok">OK</string>
+</resources>
