@@ -1,0 +1,6 @@
+<resources>
+    <string name="permission_alert_rationale">Pro načtení čísla a platnosti karty je potřeba povolit přístup k fotoaparátu.</string>
+    <string name="permission_alert_title">""</string>
+    <string name="permission_alert_button_settings">Povolit přístup k fotoaparátu</string>
+    <string name="permission_alert_button_ok">Nepovolit</string>
+</resources>
