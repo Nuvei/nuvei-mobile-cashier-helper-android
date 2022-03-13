@@ -12,6 +12,8 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
 
+        <activity android:name=".AskPermissionsActivity" android:theme="@style/Theme.Transparent" />
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

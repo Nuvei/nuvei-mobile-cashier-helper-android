@@ -1,6 +1,5 @@
 package com.nuvei.cashier
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -12,16 +11,17 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import cards.pay.paycardsrecognizer.sdk.Card
 import cards.pay.paycardsrecognizer.sdk.ScanCardIntent
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.wallet.*
 import com.google.zxing.integration.android.IntentIntegrator
+import com.nuvei.cashier.PermissionManager.askPermission
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
+
 
 @SuppressLint("StaticFieldLeak")
 public object NuveiCashierHelper {
@@ -62,7 +62,7 @@ public object NuveiCashierHelper {
 
             true
         } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }?.let {
-            checkPermissions(activity) {
+            checkCameraPermission(activity) {
                 source = "scanCard"
                 val intent = ScanCardIntent.Builder(activity).build()
                 activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
@@ -313,11 +313,21 @@ public object NuveiCashierHelper {
 
     private class NuveiException(val reason: String = ""): Exception()
 
-    private fun checkPermissions(context: Activity, completion: () -> Unit) {
-        if (shouldShowRequestPermissionRationale(context, Manifest.permission.CAMERA)) {
-            showAlert(context)
-        } else {
-            completion()
+    private fun checkCameraPermission(context: Activity, completion: () -> Unit) {
+        PermissionManager.checkPermission(
+            context,
+            PermissionManager.Permission.Camera
+        ) {
+            when (it) {
+                PermissionManager.Status.Unknown,
+                PermissionManager.Status.Granted -> completion()
+                PermissionManager.Status.Ask -> askPermission(context, PermissionManager.Permission.Camera) {
+                    if (it == PermissionManager.Status.Granted) {
+                        completion()
+                    }
+                }
+                PermissionManager.Status.Denied -> showAlert(context)
+            }
         }
     }
 
