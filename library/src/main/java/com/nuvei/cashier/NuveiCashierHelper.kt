@@ -54,12 +54,13 @@ public object NuveiCashierHelper {
 
     public fun handleURL(url: Uri?, activity: Activity) =
         url?.takeIf { it.toString().contains("nuveicashier://scanQR", ignoreCase = true) }?.let {
-            source = "scanQR"
-            val integrator = IntentIntegrator(activity)
-            integrator.setOrientationLocked(false)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-            integrator.initiateScan()
-
+            checkCameraPermission(activity) {
+                source = "scanQR"
+                val integrator = IntentIntegrator(activity)
+                integrator.setOrientationLocked(false)
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                integrator.initiateScan()
+            }
             true
         } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }?.let {
             checkCameraPermission(activity) {

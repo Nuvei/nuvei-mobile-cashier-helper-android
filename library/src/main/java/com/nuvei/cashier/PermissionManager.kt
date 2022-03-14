@@ -34,8 +34,8 @@ object PermissionManager {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val permission = intent.extras?.getSerializable(AskPermissionsActivity.Keys.Permission.value) as? Permission ?: return
-
             markPermissionAskedOnce(context, permission)
+
             completion?.invoke(
                 when (intent.action) {
                     AskPermissionsActivity.Broadcasts.PermissionGranted.value -> Status.Granted
@@ -73,7 +73,7 @@ object PermissionManager {
         }
 
         if ((context as Activity).shouldShowRequestPermissionRationale(permission.value)) {
-            completion(Status.Denied)
+            completion(if (hasNeverAskCheckbox()) Status.Ask else Status.Denied)
             return
         }
 
@@ -104,6 +104,10 @@ object PermissionManager {
         context.startActivity(intent)
     }
 
+    private fun hasNeverAskCheckbox(): Boolean {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+    }
+
     private fun markPermissionAskedOnce(context: Context, permission: Permission) {
         getStorage(context)
             .edit()
@@ -112,7 +116,7 @@ object PermissionManager {
     }
 
     private fun didAskPermissionOnce(context: Context, permission: Permission): Boolean {
-        return getStorage(context).getBoolean(permission.name, false)
+        return if (hasNeverAskCheckbox()) getStorage(context).getBoolean(permission.name, false) else false
     }
 
     private fun getStorage(context: Context): SharedPreferences {
