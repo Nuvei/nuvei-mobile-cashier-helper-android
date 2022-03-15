@@ -22,9 +22,8 @@ import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 
-
 @SuppressLint("StaticFieldLeak")
-public object NuveiCashierHelper {
+public object CashierHelper {
 
     private const val messageName = "NuveiCashierHelper"
     const val REQUEST_CODE_SCAN_CARD = 8493
@@ -42,8 +41,8 @@ public object NuveiCashierHelper {
     private var activity = WeakReference<Activity>(null)
 
     public fun connect(webView: WebView, activity: Activity) {
-        NuveiCashierHelper.activity = WeakReference(activity)
-        NuveiCashierHelper.webView = webView
+        CashierHelper.activity = WeakReference(activity)
+        CashierHelper.webView = webView
 
         webView.addJavascriptInterface(WebAppInterface(), messageName)
     }
