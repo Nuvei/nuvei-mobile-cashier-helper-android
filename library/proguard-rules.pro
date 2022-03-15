@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.nuvei.cashier.NuveiCashierHelper{ public *;}
+-keep class com.nuvei.cashier.AskPermissionsActivity{ public *;}
 
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
