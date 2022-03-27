@@ -21,6 +21,11 @@ import com.nuvei.cashier.PermissionManager.askPermission
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
+import java.util.*
+
+public enum class CashierAbility(public val title: String) {
+    QR("scanQR"), CARD("scanCard")
+}
 
 @SuppressLint("StaticFieldLeak")
 public object CashierHelper {
@@ -39,6 +44,14 @@ public object CashierHelper {
 
     private var webView: WebView? = null
     private var activity = WeakReference<Activity>(null)
+
+    public fun updateURL(url: String, abilities: List<CashierAbility>): String {
+        if (url.contains("#")) {
+            throw InputMismatchException("Input url already contains '#'")
+        }
+        val abilitiesString = abilities.joinToString("_") { it.title }
+        return "$url#$abilitiesString"
+    }
 
     public fun connect(webView: WebView, activity: Activity) {
         CashierHelper.activity = WeakReference(activity)
@@ -334,24 +347,19 @@ public object CashierHelper {
     private fun openSettings(context: Context) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val uri = Uri.fromParts("package", context.getPackageName(), null)
+        val uri = Uri.fromParts("package", context.packageName, null)
         intent.data = uri
         context.startActivity(intent)
     }
 
     private fun showAlert(context: Context) {
-        val builder = AlertDialog.Builder(context)
-
-        builder.setTitle(R.string.permission_alert_title)
-        builder.setMessage(R.string.permission_alert_rationale)
-
-        builder.setPositiveButton(R.string.permission_alert_button_settings) { dialog, which ->
-            openSettings(context)
-        }
-
-        builder.setNeutralButton(R.string.permission_alert_button_ok) { dialog, which ->
-        }
-
-        builder.show()
+        AlertDialog.Builder(context)
+            .setTitle(R.string.permission_alert_title)
+            .setMessage(R.string.permission_alert_rationale)
+            .setPositiveButton(R.string.permission_alert_button_settings) { _, _ ->
+                openSettings(context)
+            }
+            .setNeutralButton(R.string.permission_alert_button_ok) { _, _ -> }
+            .show()
     }
 }
