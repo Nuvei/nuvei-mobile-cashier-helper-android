@@ -2,5 +2,5 @@
     <string name="permission_alert_rationale">Accesul la cameră este necesar pentru scanarea numărului de card și a datei de expirare.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Permite accesul la cameră</string>
-    <string name="permission_alert_button_ok">Permite accesul la cameră</string>
+    <string name="permission_alert_button_ok">Nu permite</string>
 </resources>
