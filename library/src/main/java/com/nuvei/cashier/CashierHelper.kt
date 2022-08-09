@@ -275,9 +275,9 @@ public object CashierHelper {
                     }
                 }
             } catch (ex: Throwable) {
-                Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex = $ex")
+                Log.d("NuveiCashierSDK", "WebAppInterface.checkGooglePayAvailability: ex = $ex")
                 if (ex is NuveiException) {
-                    Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex = ${ex.reason}")
+                    Log.d("NuveiCashierSDK", "WebAppInterface.checkGooglePayAvailability: ex(NuveiException) = ${ex.reason}")
                 }
                 setGooglePayAvailable(false)
             }
@@ -300,7 +300,7 @@ public object CashierHelper {
             } catch (ex: Throwable) {
                 Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex = $ex")
                 if (ex is NuveiException) {
-                    Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex = ${ex.reason}")
+                    Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex(NuveiException) = ${ex.reason}")
                 }
             }
         }
