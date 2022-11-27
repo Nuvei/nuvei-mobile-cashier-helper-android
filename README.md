@@ -6,7 +6,7 @@ SETUP
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
 Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
-All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/2.1.0)
+All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.1.0)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
@@ -38,7 +38,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_web_view)
     
-    NuveiCashierHelper.connect(webview, this) // “this” is the current activity
+    CashierHelper.connect(webview, this) // “this” is the current activity
 
     // Register as WebView's webViewClient to tracj the URL changes and inform the CashierScanner SDK
     webview.webViewClient = object : WebViewClient() {
@@ -46,13 +46,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            return NuveiCashierHelper.handleURL(
+            return CashierHelper.handleURL(
                 request?.url,
                 this@WebViewActivity
             )
         }
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            return NuveiCashierHelper.handleURL(
+            return CashierHelper.handleURL(
                 Uri.parse(url),
                 this@WebViewActivity
             )
@@ -65,7 +65,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 For a proper tearing down of the activity add the next line in your `onDestroy` method:
 ```kotlin
 override fun onDestroy() {
-    NuveiCashierHelper.disconnect()
+    CashierHelper.disconnect()
     super.onDestroy()
 }
 ```
@@ -73,8 +73,8 @@ override fun onDestroy() {
 Implement the `onActivityResult` method in the activity that contains the web view as follows:
 ```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    // Inform NuveiCashierHelper of an activity result (for handling QR/card scanner result or GooglePay result)
-    if (!NuveiCashierHelper.handleActivityResult(requestCode, resultCode, data)) {
+    // Inform CashierHelper of an activity result (for handling QR/card scanner result or GooglePay result)
+    if (!CashierHelper.handleActivityResult(requestCode, resultCode, data)) {
         super.onActivityResult(requestCode, resultCode, data)
     }
 }
