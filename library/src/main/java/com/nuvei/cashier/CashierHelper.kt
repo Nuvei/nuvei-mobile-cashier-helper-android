@@ -57,7 +57,9 @@ public object CashierHelper {
         CashierHelper.activity = WeakReference(activity)
         CashierHelper.webView = webView
 
-        webView.addJavascriptInterface(WebAppInterface(), messageName)
+        webView.post {
+            webView.addJavascriptInterface(WebAppInterface(), messageName)
+        }
     }
 
     public fun disconnect() {
@@ -195,7 +197,11 @@ public object CashierHelper {
         url?.split("#")?.firstOrNull()?.let {
             val newUrl = "$it#$base64"
             Log.d("NuveiCashierSDK", "updateCashier: $newUrl")
-            webView?.loadUrl(newUrl)
+            webView?.let { webView ->
+                webView.post {
+                    webView.loadUrl(newUrl)
+                }
+            }
         }
     }
 
@@ -222,7 +228,11 @@ public object CashierHelper {
         Log.d("NuveiCashierSDK", "GPay.handleGooglePaySuccess: paymentInformation = $paymentInformation")
 
         val js = "handleGooglePayResult($paymentInformation, null)"
-        webView?.evaluateJavascript(js, null)
+        webView?.let { webView ->
+            webView.post {
+                webView.evaluateJavascript(js, null)
+            }
+        }
     }
 
     private fun onGooglePayError(status: Status) {
@@ -238,21 +248,33 @@ public object CashierHelper {
         Log.w("NuveiCashierSDK", "GPay.handleGooglePayError: statusJson = $statusJson")
 
         val js = "handleGooglePayResult(null, $statusJson)"
-        webView?.evaluateJavascript(js, null)
+        webView?.let { webView ->
+            webView.post {
+                webView.evaluateJavascript(js, null)
+            }
+        }
     }
 
     private fun onGooglePayCancel() {
         Log.w("NuveiCashierSDK", "GPay.handleGooglePayCancel")
 
         val js = "handleGooglePayResult(null, {\"isCanceled\":true})"
-        webView?.evaluateJavascript(js, null)
+        webView?.let { webView ->
+            webView.post {
+                webView.evaluateJavascript(js, null)
+            }
+        }
     }
 
     private fun setGooglePayAvailable(available: Boolean) {
         Log.d("NuveiCashierSDK", "GPay.setGooglePayAvailable: available = $available")
 
         val js = "handleGooglePayAvailability(${if (available) "true" else "false"})"
-        webView?.evaluateJavascript(js, null)
+        webView?.let { webView ->
+            webView.post {
+                webView.evaluateJavascript(js, null)
+            }
+        }
     }
 
     private class WebAppInterface {
