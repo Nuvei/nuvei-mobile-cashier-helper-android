@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode library_build_number
         versionName library_version
+        versionCode library_build_number
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -23,6 +23,10 @@ android {
     }
 
     buildTypes {
+        all {
+            buildConfigField "String", "VERSION_NAME", "\"$library_version\""
+            buildConfigField "int", "VERSION_CODE", "$library_build_number"
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

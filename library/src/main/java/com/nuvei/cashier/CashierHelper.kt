@@ -30,6 +30,7 @@ public enum class CashierAbility(public val title: String) {
 @SuppressLint("StaticFieldLeak")
 public object CashierHelper {
 
+    private const val TAG = "NuveiCashierHelper"
     private const val messageName = "NuveiCashierHelper"
     const val REQUEST_CODE_SCAN_CARD = 8493
     const val REQUEST_CODE_GOOGLE_PAY = 9912
@@ -54,6 +55,10 @@ public object CashierHelper {
     }
 
     public fun connect(webView: WebView, activity: Activity) {
+        val versionName = BuildConfig.VERSION_NAME
+        val versionCode = BuildConfig.VERSION_CODE
+        Log.i(TAG, "v$versionName ($versionCode)")
+
         CashierHelper.activity = WeakReference(activity)
         CashierHelper.webView = webView
 
@@ -89,7 +94,7 @@ public object CashierHelper {
             val browserIntent = Intent(Intent.ACTION_VIEW)
             val backUrl = URLEncoder.encode("nuvei://cashier", "UTF-8")
             val nuveiUrl = "https://devmobile.sccdev-qa.com/googlepay/gpay.html?data=$data&backurl=$backUrl"
-            Log.d("NuveiCashierSDK", "Open url in external browser: $nuveiUrl")
+            Log.d(TAG, "Open url in external browser: $nuveiUrl")
             browserIntent.data = Uri.parse(nuveiUrl)
             activity.startActivity(browserIntent)
 
@@ -196,7 +201,7 @@ public object CashierHelper {
 
         url?.split("#")?.firstOrNull()?.let {
             val newUrl = "$it#$base64"
-            Log.d("NuveiCashierSDK", "updateCashier: $newUrl")
+            Log.d(TAG, "updateCashier: $newUrl")
             webView?.let { webView ->
                 webView.post {
                     webView.loadUrl(newUrl)
@@ -225,7 +230,7 @@ public object CashierHelper {
 
     private fun onGooglePaySuccess(paymentData: PaymentData) {
         val paymentInformation = paymentData.toJson() ?: return
-        Log.d("NuveiCashierSDK", "GPay.handleGooglePaySuccess: paymentInformation = $paymentInformation")
+        Log.d(TAG, "GPay.handleGooglePaySuccess: paymentInformation = $paymentInformation")
 
         val js = "handleGooglePayResult($paymentInformation, null)"
         webView?.let { webView ->
@@ -245,7 +250,7 @@ public object CashierHelper {
         )
         val statusJson = JSONObject(statusMap).toString()
 
-        Log.w("NuveiCashierSDK", "GPay.handleGooglePayError: statusJson = $statusJson")
+        Log.w(TAG, "GPay.handleGooglePayError: statusJson = $statusJson")
 
         val js = "handleGooglePayResult(null, $statusJson)"
         webView?.let { webView ->
@@ -256,7 +261,7 @@ public object CashierHelper {
     }
 
     private fun onGooglePayCancel() {
-        Log.w("NuveiCashierSDK", "GPay.handleGooglePayCancel")
+        Log.w(TAG, "GPay.handleGooglePayCancel")
 
         val js = "handleGooglePayResult(null, {\"isCanceled\":true})"
         webView?.let { webView ->
@@ -267,7 +272,7 @@ public object CashierHelper {
     }
 
     private fun setGooglePayAvailable(available: Boolean) {
-        Log.d("NuveiCashierSDK", "GPay.setGooglePayAvailable: available = $available")
+        Log.d(TAG, "GPay.setGooglePayAvailable: available = $available")
 
         val js = "handleGooglePayAvailability(${if (available) "true" else "false"})"
         webView?.let { webView ->
@@ -280,7 +285,7 @@ public object CashierHelper {
     private class WebAppInterface {
         @JavascriptInterface
         fun checkGooglePayAvailability(input: String) {
-            Log.d("NuveiCashierSDK", "WebAppInterface.checkGooglePayAvailability: input = $input")
+            Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: input = $input")
 
             val activity = activity.get() ?: return
             try {
@@ -297,9 +302,9 @@ public object CashierHelper {
                     }
                 }
             } catch (ex: Throwable) {
-                Log.d("NuveiCashierSDK", "WebAppInterface.checkGooglePayAvailability: ex = $ex")
+                Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: ex = $ex")
                 if (ex is NuveiException) {
-                    Log.d("NuveiCashierSDK", "WebAppInterface.checkGooglePayAvailability: ex(NuveiException) = ${ex.reason}")
+                    Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: ex(NuveiException) = ${ex.reason}")
                 }
                 setGooglePayAvailable(false)
             }
@@ -307,7 +312,7 @@ public object CashierHelper {
 
         @JavascriptInterface
         fun openGooglePay(input: String) {
-            Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: input = $input")
+            Log.d(TAG, "WebAppInterface.openGooglePay: input = $input")
 
             val activity = activity.get() ?: return
             try {
@@ -320,9 +325,9 @@ public object CashierHelper {
                     REQUEST_CODE_GOOGLE_PAY
                 )
             } catch (ex: Throwable) {
-                Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex = $ex")
+                Log.d(TAG, "WebAppInterface.openGooglePay: ex = $ex")
                 if (ex is NuveiException) {
-                    Log.d("NuveiCashierSDK", "WebAppInterface.openGooglePay: ex(NuveiException) = ${ex.reason}")
+                    Log.d(TAG, "WebAppInterface.openGooglePay: ex(NuveiException) = ${ex.reason}")
                 }
             }
         }
