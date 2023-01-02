@@ -6,7 +6,7 @@ SETUP
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
 Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
-All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.1.0)
+All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.1.1)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
@@ -17,7 +17,7 @@ api 'com.google.zxing:core:3.4.0'
 ```
 
 
-Maven integration temporarilly unavailable
+Maven integration temporarily unavailable
 
 
 HARDWARE ACCELERATION
@@ -40,7 +40,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     
     CashierHelper.connect(webview, this) // “this” is the current activity
 
-    // Register as WebView's webViewClient to tracj the URL changes and inform the CashierScanner SDK
+    // Register as WebView's webViewClient to track the URL changes and inform the CashierScanner SDK
     webview.webViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(
             view: WebView?,
