@@ -1,5 +1,5 @@
 <resources>
-    <string name="position_card_in_frame">Umieść kartę w obrębie poniższego pola</string>
+    <string name="position_card_in_frame">Dopasuj kartę ściśle do granic ramki</string>
     <string name="button_cancel">Anulować</string>
 
     <string name="permission_alert_rationale">Dostęp do aparatu jest wymagany w celu zeskanowania numeru karty i jej daty ważności.</string>

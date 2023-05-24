@@ -1,5 +1,5 @@
 <resources>
-    <string name="position_card_in_frame">Place the credit card in the area below</string>
+    <string name="position_card_in_frame">Align your card closely to the frame limits</string>
     <string name="button_cancel">Cancel</string>
 
     <string name="permission_alert_rationale">Camera access is required for card number and expiry date scanning.</string>

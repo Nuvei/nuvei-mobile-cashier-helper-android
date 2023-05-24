@@ -1,5 +1,5 @@
 <resources>
-    <string name="position_card_in_frame">Coloque su tarjeta de crédito dentro del área marcada</string>
+    <string name="position_card_in_frame">Alinee su tarjeta de cerca con los límites del marco</string>
     <string name="button_cancel">Cancelar</string>
 
     <string name="permission_alert_rationale">Se requiere el permiso de cámara para escanear el número de tarjeta y fecha de vencimiento.</string>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="position_card_in_frame">Postavite karticu u polje ispod</string>
+    <string name="position_card_in_frame">Poravnajte svoju karticu točno prema granicama okvira</string>
     <string name="button_cancel">Odustani</string>
 
     <string name="permission_alert_rationale">Za skeniranje broja i datuma isteka kartice potreban je pristup kameri.</string>
