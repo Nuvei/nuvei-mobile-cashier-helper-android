@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Postavite karticu u polje ispod</string>
+    <string name="button_cancel">Odustani</string>
+
     <string name="permission_alert_rationale">Za skeniranje broja i datuma isteka kartice potreban je pristup kameri.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Dopustite pristup kameri</string>

@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Umístěte platební kartu do rámečku</string>
+    <string name="button_cancel">Zrušení</string>
+
     <string name="permission_alert_rationale">Pro načtení čísla a platnosti karty je potřeba povolit přístup k fotoaparátu.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Povolit přístup k fotoaparátu</string>

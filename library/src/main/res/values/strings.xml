@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Place the credit card in the area below</string>
+    <string name="button_cancel">Cancel</string>
+
     <string name="permission_alert_rationale">Camera access is required for card number and expiry date scanning.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Allow camera access</string>

@@ -4,6 +4,18 @@
     package="com.nuvei.cashier">
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <uses-feature
+        android:name="android.hardware.CAMERA"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.AUTOFOCUS"
+        android:required="false" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application>
 
@@ -21,6 +33,10 @@
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
+
+        <activity
+            android:name=".ui.ScanCardActivity"
+            android:theme="@style/ScannerTheme" />
 
     </application>
 

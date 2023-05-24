@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Umieść kartę w obrębie poniższego pola</string>
+    <string name="button_cancel">Anulować</string>
+
     <string name="permission_alert_rationale">Dostęp do aparatu jest wymagany w celu zeskanowania numeru karty i jej daty ważności.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Zezwól na dostęp do aparatu</string>

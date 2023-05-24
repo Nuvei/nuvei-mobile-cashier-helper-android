@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Plasati cardul de credit in zona de mai jos</string>
+    <string name="button_cancel">Anulare</string>
+
     <string name="permission_alert_rationale">Accesul la cameră este necesar pentru scanarea numărului de card și a datei de expirare.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Permite accesul la cameră</string>

@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Umiestnite platobnú kartu do rámčeka</string>
+    <string name="button_cancel">Zrušiť</string>
+
     <string name="permission_alert_rationale">Na skenovanie čísla karty a dátumu platnosti je potrebný prístup k fotoaparátu.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Povoliť prístup k fotoaparátu</string>

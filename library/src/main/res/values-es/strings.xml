@@ -1,4 +1,7 @@
 <resources>
+    <string name="position_card_in_frame">Coloque su tarjeta de crédito dentro del área marcada</string>
+    <string name="button_cancel">Cancelar</string>
+
     <string name="permission_alert_rationale">Se requiere el permiso de cámara para escanear el número de tarjeta y fecha de vencimiento.</string>
     <string name="permission_alert_title">""</string>
     <string name="permission_alert_button_settings">Permitir el acceso a cámara</string>

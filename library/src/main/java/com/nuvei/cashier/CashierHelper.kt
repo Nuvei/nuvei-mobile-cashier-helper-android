@@ -11,8 +11,6 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
-import cards.pay.paycardsrecognizer.sdk.Card
-import cards.pay.paycardsrecognizer.sdk.ScanCardIntent
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.wallet.*
@@ -81,28 +79,35 @@ public object CashierHelper {
                 integrator.initiateScan()
             }
             true
-        } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }?.let {
-            checkCameraPermission(activity) {
-                source = "scanCard"
-                val intent = ScanCardIntent.Builder(activity).build()
-                activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
-            }
-            true
-        } ?: url?.takeIf { it.toString().contains("nuveicashier://GPay", ignoreCase = true) }?.let {
-            source = "GPay"
-            val data = it.getQueryParameter("data")
-            val browserIntent = Intent(Intent.ACTION_VIEW)
-            val backUrl = URLEncoder.encode("nuvei://cashier", "UTF-8")
-            val nuveiUrl = "https://devmobile.sccdev-qa.com/googlepay/gpay.html?data=$data&backurl=$backUrl"
-            Log.d(TAG, "Open url in external browser: $nuveiUrl")
-            browserIntent.data = Uri.parse(nuveiUrl)
-            activity.startActivity(browserIntent)
+        } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }
+            ?.let {
+                checkCameraPermission(activity) {
+                    source = "scanCard"
+                    val intent = ScanCardIntent.Builder(activity).build()
+                    activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
+                }
+                true
+            } ?: url?.takeIf { it.toString().contains("nuveicashier://GPay", ignoreCase = true) }
+            ?.let {
+                source = "GPay"
+                val data = it.getQueryParameter("data")
+                val browserIntent = Intent(Intent.ACTION_VIEW)
+                val backUrl = URLEncoder.encode("nuvei://cashier", "UTF-8")
+                val nuveiUrl =
+                    "https://devmobile.sccdev-qa.com/googlepay/gpay.html?data=$data&backurl=$backUrl"
+                Log.d(TAG, "Open url in external browser: $nuveiUrl")
+                browserIntent.data = Uri.parse(nuveiUrl)
+                activity.startActivity(browserIntent)
 
-            true
-        } ?: false
+                true
+            } ?: false
 
     public fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
-        IntentIntegrator.parseActivityResult(requestCode, resultCode, data)?.contents?.let { result ->
+        IntentIntegrator.parseActivityResult(
+            requestCode,
+            resultCode,
+            data
+        )?.contents?.let { result ->
             didScan(result)
             true
         } ?: handleActivityResultAsCreditCard(requestCode, resultCode, data) ||
@@ -128,23 +133,31 @@ public object CashierHelper {
         REQUEST_CODE_SCAN_CARD -> {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    data?.getParcelableExtra<Card>(ScanCardIntent.RESULT_PAYCARDS_CARD)?.let {
+                    data?.getParcelableExtra<Card>(
+                        ScanCardIntent.RESULT_PAYCARDS_CARD)?.let {
                         didScan(it)
                     }
                 }
+
                 Activity.RESULT_CANCELED -> {
                     // TODO: Handle cancel
                 }
+
                 else -> {
                     // TODO: Handle error
                 }
             }
             true
         }
+
         else -> false
     }
 
-    private fun handleActivityResultAsGooglePay(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+    private fun handleActivityResultAsGooglePay(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ): Boolean {
         return when (requestCode) {
             REQUEST_CODE_GOOGLE_PAY -> {
                 when (resultCode) {
@@ -164,6 +177,7 @@ public object CashierHelper {
                 }
                 true
             }
+
             else -> false
         }
     }
@@ -196,7 +210,8 @@ public object CashierHelper {
     }
 
     private fun updateCashier(data: String, isBase64Encoded: Boolean = false) {
-        val base64 = if (isBase64Encoded) data else Base64.encodeToString(data.toByteArray(), Base64.NO_WRAP)
+        val base64 =
+            if (isBase64Encoded) data else Base64.encodeToString(data.toByteArray(), Base64.NO_WRAP)
         val url = webView?.url
 
         url?.split("#")?.firstOrNull()?.let {
@@ -294,7 +309,8 @@ public object CashierHelper {
                 val paymentsClient = paymentUtils.createPaymentsClient(activity)
                 paymentsClient.isReadyToPay(request).addOnCompleteListener { completedTask ->
                     try {
-                        completedTask.getResult(ApiException::class.java)?.let(::setGooglePayAvailable)
+                        completedTask.getResult(ApiException::class.java)
+                            ?.let(::setGooglePayAvailable)
                     } catch (exception: ApiException) {
                         // Process error
                         Log.w("isReadyToPay failed", exception)
@@ -304,7 +320,10 @@ public object CashierHelper {
             } catch (ex: Throwable) {
                 Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: ex = $ex")
                 if (ex is NuveiException) {
-                    Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: ex(NuveiException) = ${ex.reason}")
+                    Log.d(
+                        TAG,
+                        "WebAppInterface.checkGooglePayAvailability: ex(NuveiException) = ${ex.reason}"
+                    )
                 }
                 setGooglePayAvailable(false)
             }
@@ -335,7 +354,8 @@ public object CashierHelper {
 
     private class NuveiGooglePaymentUtils(val json: JSONObject) {
         fun createPaymentsClient(activity: Activity): PaymentsClient {
-            val environmentString = json["environment"] as? String ?: throw NuveiException("Missing environment")
+            val environmentString =
+                json["environment"] as? String ?: throw NuveiException("Missing environment")
 
             val environment: Int = when (environmentString) {
                 "TEST" -> WalletConstants.ENVIRONMENT_TEST
@@ -351,7 +371,7 @@ public object CashierHelper {
         }
     }
 
-    private class NuveiException(val reason: String = ""): Exception()
+    private class NuveiException(val reason: String = "") : Exception()
 
     private fun checkCameraPermission(context: Activity, completion: () -> Unit) {
         PermissionManager.checkPermission(
@@ -361,11 +381,16 @@ public object CashierHelper {
             when (it) {
                 PermissionManager.Status.Unknown,
                 PermissionManager.Status.Granted -> completion()
-                PermissionManager.Status.Ask -> askPermission(context, PermissionManager.Permission.Camera) {
+
+                PermissionManager.Status.Ask -> askPermission(
+                    context,
+                    PermissionManager.Permission.Camera
+                ) {
                     if (it == PermissionManager.Status.Granted) {
                         completion()
                     }
                 }
+
                 PermissionManager.Status.Denied -> showAlert(context)
             }
         }
