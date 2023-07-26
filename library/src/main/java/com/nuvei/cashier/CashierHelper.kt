@@ -44,6 +44,8 @@ public object CashierHelper {
     private var webView: WebView? = null
     private var activity = WeakReference<Activity>(null)
 
+    var cashierBackButtonClicked: (() -> Unit)? = null
+
     public fun updateURL(url: String, abilities: List<CashierAbility>): String {
         if (url.contains("#")) {
             throw InputMismatchException("Input url already contains '#'")
@@ -100,6 +102,11 @@ public object CashierHelper {
                 activity.startActivity(browserIntent)
 
                 true
+            } ?: url?.takeIf { it.toString().contains("nuveicashier://back", ignoreCase = true) }
+            ?.let {
+                cashierBackButtonClicked?.invoke()
+
+                cashierBackButtonClicked != null
             } ?: false
 
     public fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
