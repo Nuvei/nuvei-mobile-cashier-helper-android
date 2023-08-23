@@ -6,7 +6,7 @@ SETUP
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
 Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
-All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.1.1)
+All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.2)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
