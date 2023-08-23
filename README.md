@@ -5,13 +5,12 @@ SETUP
 ------------
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
-Download all the relevant third party libraries (nuvei-paycards.aar and nuvei-zxing-android-embedded.aar).
+Download all the relevant third party libraries (nuvei-zxing-android-embedded.aar).
 All the above may be downloaded from [the latest release](https://github.com/SafeChargeInternational/NuveiCashierHelper-Android/releases/tag/3.2)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
 implementation(name:'nuvei-cashier-helper', ext:'aar')
-implementation(name:'nuvei-paycards', ext:'aar')
 implementation(name:'nuvei-zxing-android-embedded', ext:'aar')
 api 'com.google.zxing:core:3.4.0'
 ```
@@ -89,7 +88,6 @@ HINTS & TIPS
 
 THIRD PARTY LIBS
 ------------
-* [Pay.Cards](https://github.com/SafeChargeInternational/PayCards_Android)
 * [ZXing](https://github.com/SafeChargeInternational/zxing-android-embedded)
 
 LICENSE
