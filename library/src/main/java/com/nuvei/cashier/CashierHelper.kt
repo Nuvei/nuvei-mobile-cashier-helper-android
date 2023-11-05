@@ -2,6 +2,7 @@ package com.nuvei.cashier
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -30,6 +31,8 @@ public object CashierHelper {
 
     private const val TAG = "NuveiCashierHelper"
     private const val messageName = "NuveiCashierHelper"
+    private const val returnDeeplinkScheme = "nuveireturn://"
+
     const val REQUEST_CODE_SCAN_CARD = 8493
     const val REQUEST_CODE_GOOGLE_PAY = 9912
 
@@ -131,6 +134,19 @@ public object CashierHelper {
 //                updateCashier(it, true)
 //                true
 //            } ?: false
+    public fun handleIntent(intent: Intent): Boolean =
+        intent.data
+            ?.toString()
+            ?.takeIf { it.contains(returnDeeplinkScheme, ignoreCase = true) }
+            ?.let {
+                returnBack()
+                true
+            } ?: false
+
+    private fun returnBack() {
+        val script = "window.postMessage('{\"action\":\"appReturnLinkUsed\"}', '*');"
+        webView?.evaluateJavascript(script, null)
+    }
 
     private fun handleActivityResultAsCreditCard(
         requestCode: Int,
@@ -304,7 +320,43 @@ public object CashierHelper {
         }
     }
 
+    private fun openInBrowserAction(url: Uri) {
+        try {
+            val activity = activity.get() ?: return
+            val browserIntent = Intent(Intent.ACTION_VIEW)
+            Log.d(TAG, "Open url in external browser: $url")
+            browserIntent.data = url
+            activity.startActivity(browserIntent)
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, e.toString() + "\n" + e.stackTraceToString())
+        }
+    }
+
     private class WebAppInterface {
+        @JavascriptInterface
+        fun postMessage(input: String) {
+            Log.d(TAG, "WebAppInterface.handleAction: input = $input")
+
+            try {
+                val json = JSONObject(input)
+                when (val action = json["action"] as? String) {
+                    "open_in_browser" -> {
+                        val url = Uri.parse(json["url"] as? String)
+                        openInBrowserAction(url)
+                    }
+
+                    else -> {
+                        Log.d(
+                            TAG,
+                            "WebAppInterface.handleAction: action didn't handle : action = $action"
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "WebAppInterface.handleAction: error = $e")
+            }
+        }
+
         @JavascriptInterface
         fun checkGooglePayAvailability(input: String) {
             Log.d(TAG, "WebAppInterface.checkGooglePayAvailability: input = $input")
