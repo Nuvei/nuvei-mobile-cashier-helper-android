@@ -19,6 +19,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.nuvei.cashier.PermissionManager.askPermission
 import org.json.JSONObject
 import java.lang.ref.WeakReference
+import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.*
 
@@ -341,8 +342,8 @@ public object CashierHelper {
                 val json = JSONObject(input)
                 when (val action = json["action"] as? String) {
                     "open_in_browser" -> {
-                        val url = Uri.parse(json["url"] as? String)
-                        openInBrowserAction(url)
+                        val url = URLDecoder.decode(json["url"] as? String)
+                        openInBrowserAction(Uri.parse(url))
                     }
 
                     else -> {
