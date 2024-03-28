@@ -24,6 +24,7 @@
 -keep class com.nuvei.cashier.CashierAbility{ public *;}
 -keep class com.nuvei.cashier.AskPermissionsActivity{ public *;}
 -keep class com.nuvei.cashier.Card{ public *;}
+-keep class com.nuvei.cashier.ui.QRScanActivity{ public *;}
 
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);

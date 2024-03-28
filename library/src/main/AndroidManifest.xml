@@ -38,6 +38,7 @@
             android:name=".ui.ScanCardActivity"
             android:theme="@style/ScannerTheme" />
 
+        <activity android:name=".ui.QRScanActivity"/>
     </application>
 
 </manifest>

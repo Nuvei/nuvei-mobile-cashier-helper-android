@@ -13,13 +13,22 @@ import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
-import com.google.android.gms.wallet.*
+import com.google.android.gms.wallet.AutoResolveHelper
+import com.google.android.gms.wallet.IsReadyToPayRequest
+import com.google.android.gms.wallet.PaymentData
+import com.google.android.gms.wallet.PaymentDataRequest
+import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 import com.google.zxing.integration.android.IntentIntegrator
 import com.nuvei.cashier.PermissionManager.askPermission
+import com.nuvei.cashier.ui.QRScanActivity
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
-import java.util.*
+import java.util.InputMismatchException
+import java.util.Locale
+
 
 public enum class CashierAbility(public val title: String) {
     QR("scanQR"), CARD("scanCard")
@@ -54,10 +63,11 @@ public object CashierHelper {
         return "$url#$abilitiesString"
     }
 
-    public fun connect(webView: WebView, activity: Activity) {
+    public fun connect(webView: WebView, activity: Activity, locale: Locale = Locale.getDefault()) {
         val versionName = BuildConfig.VERSION_NAME
         val versionCode = BuildConfig.VERSION_CODE
         Log.i(TAG, "v$versionName ($versionCode)")
+        LocaleManager.currentLocale = locale
 
         CashierHelper.activity = WeakReference(activity)
         CashierHelper.webView = webView
@@ -77,6 +87,7 @@ public object CashierHelper {
                 source = "scanQR"
                 val integrator = IntentIntegrator(activity)
                 integrator.setOrientationLocked(false)
+                integrator.setCaptureActivity(QRScanActivity::class.java)
                 integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                 integrator.initiateScan()
             }
@@ -141,7 +152,8 @@ public object CashierHelper {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     data?.getParcelableExtra<Card>(
-                        ScanCardIntent.RESULT_PAYCARDS_CARD)?.let {
+                        ScanCardIntent.RESULT_PAYCARDS_CARD
+                    )?.let {
                         didScan(it)
                     }
                 }

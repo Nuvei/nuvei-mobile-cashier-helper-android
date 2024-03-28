@@ -1,5 +1,6 @@
 package com.nuvei.cashier.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,15 +14,22 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
 import com.nuvei.cashier.Card;
+import com.nuvei.cashier.LocaleManager;
 import com.nuvei.cashier.ScanCardIntent;
 import com.nuvei.cashier.camera.RecognitionAvailabilityChecker;
 import com.nuvei.cashier.camera.RecognitionCoreUtils;
 import com.nuvei.cashier.camera.RecognitionUnavailableException;
+import com.nuvei.cashier.utils.LocalizationContextWrapper;
 
 public class ScanCardActivity extends AppCompatActivity implements ScanCardFragment.InteractionListener,
         InitLibraryFragment.InteractionListener {
 
     private static final String TAG = "ScanCardActivity";
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(LocalizationContextWrapper.Companion.wrap(context, LocaleManager.INSTANCE.getCurrentLocale()));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
