@@ -95,7 +95,7 @@ publishing {
     publications {
         sdkRelease(MavenPublication) {
             groupId = 'com.nuvei.mobile'
-            artifactId = 'CashierScanner'
+            artifactId = 'cashier-helper-sdk'
             version = library_version
 
             from components.findByName('release')
