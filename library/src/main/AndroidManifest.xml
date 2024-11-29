@@ -18,13 +18,6 @@
         android:required="true" />
 
     <application>
-
-        <activity
-            android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation"
-            android:exported="false" />
-
         <activity
             android:name=".AskPermissionsActivity"
             android:theme="@style/Theme.Transparent"
@@ -38,7 +31,6 @@
             android:name=".ui.ScanCardActivity"
             android:theme="@style/ScannerTheme" />
 
-        <activity android:name=".ui.QRScanActivity"/>
     </application>
 
 </manifest>

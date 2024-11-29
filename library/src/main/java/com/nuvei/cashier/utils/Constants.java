@@ -18,5 +18,4 @@ public class Constants {
 
     public static final int NEURO_DATA_VERSION = 9;
 
-    public static final String PAYCARDS_URL = "https://pay.cards";
 }
