@@ -39,7 +39,7 @@ target_include_directories(caffe
 
 target_compile_definitions(caffe PUBLIC CPU_ONLY USE_EIGEN)
 target_compile_options(caffe PRIVATE
-        -marm -Wno-unused-command-line-argument
+        -Wno-unused-command-line-argument
         -frtti -fexceptions
         -O3)
 set_target_properties(caffe PROPERTIES
@@ -47,7 +47,8 @@ set_target_properties(caffe PROPERTIES
         VISIBILITY_INLINES_HIDDEN 1)
 
 if (${ANDROID_ABI} STREQUAL "armeabi-v7a")
-    set_property(TARGET caffe APPEND_STRING PROPERTY COMPILE_FLAGS " -mfpu=neon")
+    # Enable ARM mode and NEON only for 32-bit ARM
+    target_compile_options(caffe PRIVATE -marm -mfpu=neon)
 endif()
 
 target_link_libraries(caffe

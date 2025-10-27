@@ -33,6 +33,7 @@ import com.nuvei.cashier.camera.widget.CameraPreviewLayout;
 import com.nuvei.cashier.ndk.RecognitionResult;
 import com.nuvei.cashier.ui.views.ProgressBarIndeterminate;
 import com.nuvei.cashier.utils.Constants;
+import com.nuvei.cashier.utils.EdgeToEdgeHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class ScanCardFragment extends Fragment {
@@ -94,6 +95,8 @@ public class ScanCardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_scan_card, container, false);
+
+        EdgeToEdgeHelper.applyBottomInsets(requireActivity().getWindow(), root);
 
         mProgressBar = root.findViewById(R.id.progress_bar);
 

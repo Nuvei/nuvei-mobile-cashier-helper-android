@@ -1,11 +1,13 @@
 package com.nuvei.cashier.ui
 
 import android.content.Context
+import android.view.View
 import android.widget.Button
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.nuvei.cashier.LocaleManager
 import com.nuvei.cashier.R
+import com.nuvei.cashier.utils.EdgeToEdgeHelper
 import com.nuvei.cashier.utils.LocalizationContextWrapper
 
 class QRScanActivity : CaptureActivity() {
@@ -22,6 +24,9 @@ class QRScanActivity : CaptureActivity() {
     }
 
     private fun initViews() {
+        val rootView = findViewById<View>(R.id.root)
+        EdgeToEdgeHelper.applyBottomInsets(window, rootView)
+
         val button = findViewById<Button>(R.id.cancel_action)
         button.setOnClickListener {
             onBackPressed()

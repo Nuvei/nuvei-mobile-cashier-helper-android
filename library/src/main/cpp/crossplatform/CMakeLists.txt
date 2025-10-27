@@ -33,7 +33,7 @@ set_target_properties(crossplatform PROPERTIES
         CXX_VISIBILITY_PRESET hidden
         VISIBILITY_INLINES_HIDDEN 1)
 target_compile_options(crossplatform PRIVATE
-        -marm -Wno-unused-command-line-argument
+        -Wno-unused-command-line-argument
         -frtti -fexceptions
         -O3)
 
@@ -53,7 +53,7 @@ target_include_directories(crossplatform
         jniImpl)
 
 if (ANDROID_ABI STREQUAL "armeabi-v7a")
-    set_property(TARGET crossplatform APPEND_STRING PROPERTY COMPILE_FLAGS " -mfpu=neon")
+    target_compile_options(crossplatform PRIVATE -marm -mfpu=neon)
 elseif(ANDROID_ABI MATCHES "x86(_64)?")
     target_compile_options(crossplatform PRIVATE
             $<$<STREQUAL:${ANDROID_ABI},x86>:-msse3>

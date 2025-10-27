@@ -23,6 +23,7 @@ import com.nuvei.cashier.camera.RecognitionCoreUtils;
 import com.nuvei.cashier.camera.RecognitionUnavailableException;
 import com.nuvei.cashier.camera.widget.CameraPreviewLayout;
 import com.nuvei.cashier.ndk.RecognitionCore;
+import com.nuvei.cashier.utils.EdgeToEdgeHelper;
 
 import java.lang.ref.WeakReference;
 
@@ -76,6 +77,7 @@ public final class InitLibraryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EdgeToEdgeHelper.applyBottomInsets(requireActivity().getWindow(), view);
         mProgressBar.setVisibility(View.GONE);
         mMainContent.setVisibility(View.VISIBLE);
         mCameraPreviewLayout.setVisibility(View.VISIBLE);
