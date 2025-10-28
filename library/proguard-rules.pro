@@ -26,6 +26,12 @@
 -keep class com.nuvei.cashier.Card{ public *;}
 -keep class com.nuvei.cashier.ui.QRScanActivity{ public *;}
 
+# These ProGuard rules are used to optimize and obfuscate the SDK while avoiding
+# class name conflicts with other libraries:
+-repackageclasses 'com.nuvei.cashier.obfuscated'
+-allowaccessmodification
+-dontpreverify
+
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);

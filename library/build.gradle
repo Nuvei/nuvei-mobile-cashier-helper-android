@@ -57,42 +57,76 @@ android {
     }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                // Applies the component for the release build variant.
+//                from components.release
+//
+//                // You can then customize attributes of the publication as shown below.
+//                groupId = 'com.nuvei'
+//                artifactId = 'CashierScanner'
+//                version = library_version
+//
+//                pom {
+//                    name = 'CashierScanner'
+//                    description = 'Nuvei Cashier Scanner library'
+//                    url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
+//                    licenses {
+//                        license {
+//                            name = 'Custom License'
+//                            url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner/blob/master/LICENSE.md'
+//                        }
+//                    }
+//                    developers {
+//                        developer {
+//                            id = 'nuvei'
+//                            name = 'Nuvei'
+//                            email = 'yavor.stefanov@nuvei.com'
+//                        }
+//                    }
+//                    scm {
+//                        connection = 'scm:git:git://github.com/SafeChargeInternational/NuveiCashierScanner.git'
+//                        url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.nuvei'
-                artifactId = 'CashierScanner'
-                version = library_version
+repositories {
+    mavenCentral()
+}
 
-                pom {
-                    name = 'CashierScanner'
-                    description = 'Nuvei Cashier Scanner library'
-                    url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
-                    licenses {
-                        license {
-                            name = 'Custom License'
-                            url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner/blob/master/LICENSE.md'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'nuvei'
-                            name = 'Nuvei'
-                            email = 'yavor.stefanov@nuvei.com'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:git://github.com/SafeChargeInternational/NuveiCashierScanner.git'
-                        url = 'https://github.com/SafeChargeInternational/NuveiCashierScanner'
-                    }
+publishing {
+    publications {
+        sdkRelease(MavenPublication) {
+            groupId = 'com.nuvei.mobile'
+            artifactId = 'cashier-helper-sdk'
+            version = library_version
+
+            from components.findByName('release')
+            artifact "$buildDir/outputs/aar/library-release.aar"
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each { dependency ->
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dependency.group)
+                    dependencyNode.appendNode('artifactId', dependency.name)
+                    dependencyNode.appendNode('version', dependency.version)
                 }
             }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'LocalMaven'
+            url = layout.buildDirectory.dir("repo")
         }
     }
 }
