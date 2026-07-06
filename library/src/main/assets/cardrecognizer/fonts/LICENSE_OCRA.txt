@@ -1,0 +1,18 @@
+OCR-A Font License and Attribution Information
+==============================================
+
+The font file `OCRAStd.ttf` included in this directory is a digital implementation of the OCR-A typeface.
+
+Creator: John Sauter (John_Sauter@systemeyescomputerstore.com)
+Date: February 4, 2010
+Source: http://sourceforge.net/projects/ocr-a-font
+
+Licensing Status:
+-----------------
+This font has been explicitly released into the PUBLIC DOMAIN worldwide by the author, John Sauter.
+
+You are free to use, modify, distribute, and embed this font software in commercial and non-commercial products without royalties, restrictions, or copyright claims.
+
+Disclaimer:
+-----------
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
