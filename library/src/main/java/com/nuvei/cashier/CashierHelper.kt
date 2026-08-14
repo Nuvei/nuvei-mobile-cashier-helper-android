@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
+import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.common.api.ApiException
@@ -46,10 +47,11 @@ public object CashierHelper {
 
     private var source = ""
 
-    private val hostWhiteList = arrayListOf(
-        "apmtest.gate2shop.com",       // QA
-        "ppp-test.safecharge.com",     // Integration
-        "secure.safecharge.com"        // Production
+    private val cashierDomains = listOf(
+        "nuvei.com",
+        "safecharge.com",
+        "gate2shop.com",
+        "sccdev-qa.com"
     )
 
     private var webView: WebView? = null
@@ -57,9 +59,18 @@ public object CashierHelper {
 
     var cashierBackButtonClicked: (() -> Unit)? = null
 
+    /**
+     * Schemes to hand off even when the cashier is not served from a Nuvei domain.
+     * Only needed when self-hosting the cashier. Never list your own app's schemes.
+     */
+    public var externalSchemes: List<String> = emptyList()
+
     // Foreground return support (like iOS didBecomeActive -> dispatch onAppFocusReturn)
     private var hasPendingFocusReturn: Boolean = false
     private var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks? = null
+
+    // Held directly so callbacks can be removed after the activity is collected.
+    private var application: Application? = null
 
     public fun updateURL(url: String, abilities: List<CashierAbility>): String {
         if (url.contains("#")) {
@@ -93,29 +104,34 @@ public object CashierHelper {
         hasPendingFocusReturn = false
     }
 
-    public fun handleURL(url: Uri?, activity: Activity) =
-        url?.takeIf { it.toString().contains("nuveicashier://scanQR", ignoreCase = true) }?.let {
-            checkCameraPermission(activity) {
-                source = "scanQR"
-                val integrator = IntentIntegrator(activity)
-                integrator.setOrientationLocked(false)
-                integrator.setCaptureActivity(QRScanActivity::class.java)
-                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-                integrator.initiateScan()
+    public fun handleURL(url: Uri?, activity: Activity): Boolean {
+        if (url == null) return false
+
+        when (url.nuveiCommand()) {
+            "scanqr" -> {
+                checkCameraPermission(activity) {
+                    source = "scanQR"
+                    val integrator = IntentIntegrator(activity)
+                    integrator.setOrientationLocked(false)
+                    integrator.setCaptureActivity(QRScanActivity::class.java)
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                    integrator.initiateScan()
+                }
+                return true
             }
-            true
-        } ?: url?.takeIf { it.toString().contains("nuveicashier://scanCard", ignoreCase = true) }
-            ?.let {
+
+            "scancard" -> {
                 checkCameraPermission(activity) {
                     source = "scanCard"
                     val intent = ScanCardIntent.Builder(activity).build()
                     activity.startActivityForResult(intent, REQUEST_CODE_SCAN_CARD)
                 }
-                true
-            } ?: url?.takeIf { it.toString().contains("nuveicashier://GPay", ignoreCase = true) }
-            ?.let {
+                return true
+            }
+
+            "gpay" -> {
                 source = "GPay"
-                val data = it.getQueryParameter("data")
+                val data = url.getQueryParameter("data")
                 val browserIntent = Intent(Intent.ACTION_VIEW)
                 val backUrl = URLEncoder.encode("nuvei://cashier", "UTF-8")
                 val nuveiUrl =
@@ -123,18 +139,41 @@ public object CashierHelper {
                 Log.d(TAG, "Open url in external browser: $nuveiUrl")
                 browserIntent.data = Uri.parse(nuveiUrl)
                 activity.startActivity(browserIntent)
-                true
-            } ?: url?.takeIf { it.toString().contains("nuveicashier://back", ignoreCase = true) }
-            ?.let {
-                cashierBackButtonClicked?.invoke()
-                cashierBackButtonClicked != null
+                return true
             }
-        // External schemes: try startActivity (do NOT rely on resolveActivity on API 30+)
-        ?: url?.let {
-            val opened = tryOpenExternal(activity, it.toString())
-            if (opened) hasPendingFocusReturn = true
-            true // consume so WebView doesn’t try to load it
-        } ?: false
+
+            "back" -> {
+                cashierBackButtonClicked?.invoke()
+                return cashierBackButtonClicked != null
+            }
+        }
+
+        val urlString = url.toString()
+        // The WebView loads these itself; handing them off would send ordinary
+        // cashier navigation to the browser.
+        if (URLUtil.isValidUrl(urlString) || URLUtil.isDataUrl(urlString)) return false
+
+        // On a merchant's own pages every URL belongs to the merchant, including
+        // their private command schemes.
+        val onCashierPage = webView?.url
+            ?.let { Uri.parse(it).host }
+            ?.isCashierDomain() == true
+        val optedIn = externalSchemes.any { it.equals(url.scheme, ignoreCase = true) }
+        if (!onCashierPage && !optedIn) return false
+
+        val opened = tryOpenExternal(activity, urlString)
+        if (opened) hasPendingFocusReturn = true
+        return opened
+    }
+
+    private fun Uri.nuveiCommand(): String? {
+        if (!scheme.equals("nuveicashier", ignoreCase = true)) return null
+        val raw = host ?: schemeSpecificPart.orEmpty().trimStart('/')
+        return raw.substringBefore('?').lowercase().takeIf { it.isNotEmpty() }
+    }
+
+    private fun String.isCashierDomain(): Boolean =
+        cashierDomains.any { equals(it, true) || endsWith(".$it", true) }
 
     public fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
         IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -447,13 +486,15 @@ public object CashierHelper {
 
         app.registerActivityLifecycleCallbacks(callbacks)
         activityLifecycleCallbacks = callbacks
+        application = app
     }
 
     private fun unregisterForegroundReturnObserver() {
-        val act = activity.get() ?: return
+        val app = application ?: return
         val callbacks = activityLifecycleCallbacks ?: return
-        act.application.unregisterActivityLifecycleCallbacks(callbacks)
+        app.unregisterActivityLifecycleCallbacks(callbacks)
         activityLifecycleCallbacks = null
+        application = null
     }
 
     private fun appDidBecomeActive() {

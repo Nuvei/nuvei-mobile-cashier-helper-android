@@ -6,7 +6,7 @@ SETUP
 Manual integration: 
 Download the latest library (nuvei-cashier-helper.aar). 
 Download all the relevant third party libraries (nuvei-zxing-android-embedded.aar).
-All the above may be downloaded from [the latest release](https://github.com/Nuvei/nuvei-mobile-cashier-helper-android/releases/tag/3.3)
+All the above may be downloaded from [the latest release](https://github.com/Nuvei/nuvei-mobile-cashier-helper-android/releases/tag/3.4.1)
 Put all the above libraries files under libs folder in your project.
 Add the next line in your app build.gradle file:
 ```gradle
@@ -77,6 +77,28 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
         super.onActivityResult(requestCode, resultCode, data)
     }
 }
+```
+
+EXTERNAL LINKS
+------------
+Cashier pages served from a Nuvei domain may redirect to another app, e.g. a banking app for an APM payment. On your own pages `handleURL` returns `false` for everything except `nuveicashier://` commands, so your own custom schemes reach your `WebViewClient` untouched.
+
+If you serve the cashier from your own domain, list the schemes to hand off:
+```kotlin
+CashierHelper.externalSchemes = listOf("bankid", "swish")
+```
+
+The cashier page can also request a link directly, and listen for the user coming back:
+```javascript
+window.NuveiCashierHelper.postMessage(JSON.stringify({
+    action: "openExternalLink",
+    link: "bankid:///?autostart=1",
+    callbackID: "tx_001" // optional; result arrives on window.onNativeCallback
+}));
+
+window.addEventListener('onAppFocusReturn', function () {
+    // re-check payment status
+});
 ```
 
 HINTS & TIPS
